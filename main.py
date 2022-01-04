@@ -20,3 +20,7 @@ if __name__ == '__main__':
     graaf = Graph([a, b, c, d, e, f, g])
 
     print(graaf)
+
+    graaf.sortNodes()
+
+    graaf.printMoments()
