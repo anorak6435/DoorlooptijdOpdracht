@@ -1,4 +1,4 @@
-from graph import GraphNode, Graph
+from graph import GraphNode, Graph, Dependency
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
@@ -7,6 +7,14 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('Jarno')
 
+    # Dependency's
+    deps = {
+        "C": [Dependency("C", "A")],
+        "D": [Dependency("D", "B")],
+        "E": [Dependency("E", "B"), Dependency("E", "C")],
+        "F": [Dependency("F", "A")],
+        "G": [Dependency("G", "E"), Dependency("G", "F")]
+    }
     # maak graphnodes
     a = GraphNode("A", 6, [])
     b = GraphNode("B", 3, [])
@@ -24,3 +32,7 @@ if __name__ == '__main__':
     graaf.sortNodes()
 
     graaf.printMoments()
+    # graaf.restoreDependency() # prob don't need to do that anymore
+
+    graaf.ShortestTimeDone(deps)
+
