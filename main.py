@@ -1,4 +1,4 @@
-from graph import GraphNode, Graph, Dependency
+from graph import GraphNode, Graph
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
@@ -7,14 +7,7 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('Jarno')
 
-    # Dependency's
-    deps = {
-        "C": [Dependency("C", "A")],
-        "D": [Dependency("D", "B")],
-        "E": [Dependency("E", "B"), Dependency("E", "C")],
-        "F": [Dependency("F", "A")],
-        "G": [Dependency("G", "E"), Dependency("G", "F")]
-    }
+
     # maak graphnodes
     a = GraphNode("A", 6, [])
     b = GraphNode("B", 3, [])
@@ -24,8 +17,19 @@ if __name__ == '__main__':
     f = GraphNode("F", 8, [a])
     g = GraphNode("G", 8, [e,f])
 
+    # Dependencies: key heeft lijst aan nodes afhankelijk van hem
+    deps = {
+        a: [c, f],
+        b: [d, e],
+        c: [e],
+        d: [],
+        e: [g],
+        f: [g],
+        g: []
+    }
+
     # maak graph
-    graaf = Graph([a, b, c, d, e, f, g])
+    graaf = Graph([a, b, c, d, e, f, g], deps)
 
     print(graaf)
 
@@ -34,5 +38,6 @@ if __name__ == '__main__':
     graaf.printMoments()
     # graaf.restoreDependency() # prob don't need to do that anymore
 
-    graaf.ShortestTimeDone(deps)
+    # geef de dictionary van depencencies mee en een lijst van beschikbare nodes. Die leeg begint.
+    print("Doorlooptijd project:", graaf.ShortestTimeDone())
 
