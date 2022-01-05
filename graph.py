@@ -11,15 +11,10 @@ class GraphNode:
         return "".join(["Node(", str(self.name), ", ", str(self.duration), ")"])
 
 
-class Dependency:
-    def __init__(self, from_node, to_node):
-        self.from_node = from_node
-        self.to_node = to_node
-
-
 class Graph:
-    def __init__(self, _nodes):
+    def __init__(self, _nodes, deps):
         self.moment = [_nodes]
+        self.dependencies = deps
         # self.moment [
         #     [],
         #     [] # etc...
@@ -77,6 +72,31 @@ class Graph:
                 if voortganger in gesorteerde_activiteiten:
                     activiteit.voorgangers.remove(voortganger)
 
-    def ShortestTimeDone(self, dependencies):
+    # van achter naar voren over de nodes loopen.
+    def ShortestTimeDone(self):
         print("start ShortestTimeDone")  # debug print
+        # De beschikbaarheid van de nodes is een waarde die ik kan bijhouden met
+        for momentIndex in range(len(self.moment)-1, -1, -1):
+            for i in range(len(self.moment[momentIndex])):
+                self.moment[momentIndex][i] = self.visit(self.moment[momentIndex][i])  # visit the nodes van het laatste moment naar het eerste moment
+        # hier zijn we door alle momenten gegaan. De hoogste waarde van het eerste moment is de langste doorlooptijd
+        return max(self.moment[0][0].duration, self.moment[0][1].duration)
+
+    # als geen latere node op deze node depends
+    # als één latere node op deze node depends voeg de tijd van de latere node toe.
+    # als twee later nodes op deze node dependen voeg de langste tijd van de latere node toe.
+    def visit(self, node):
+        # controleer of deze node nodes heeft die afhankelijk zijn van hem
+        if len(self.dependencies[node]) == 0:
+            return node  # node heeft geen latere afhankelijkheden dus er gebeurt niets met zijn waarde
+        elif len(self.dependencies[node]) == 1:
+            # voeg de depenceny duration toe aan de duration van deze node
+            node.duration += self.dependencies[node][0].duration
+            return node
+        elif len(self.dependencies[node]) == 2:
+            # voeg de hoogste dependency duration toe aan de duration van deze node
+            node.duration += max(self.dependencies[node][0].duration, self.dependencies[node][1].duration)
+            return node
+
+
 
