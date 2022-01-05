@@ -35,3 +35,4 @@ if __name__ == '__main__':
     # graaf.restoreDependency() # prob don't need to do that anymore
 
     graaf.ShortestTimeDone(deps)
+

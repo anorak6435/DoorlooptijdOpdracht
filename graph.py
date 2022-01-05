@@ -38,6 +38,7 @@ class Graph:
                 if node.hasDependency():
                     self.moveNodeDown(node, index)
         else:  # voor alle volgende lijsten.
+
             for x in range(len(self.moment[index])-1, -1, -1):
                 node = self.moment[index][x]
                 print(node)  # debug print
@@ -70,6 +71,7 @@ class Graph:
     def updateDependency(self, gesorteerde_activiteiten, ongesorteerde_activiteiten):
         for activiteit in ongesorteerde_activiteiten:
             # ga achterstevoren over de lijst omdat tijdens de loop items verwijderd worden
+
             for x in range(len(activiteit.voorgangers)-1, -1, -1):
                 voortganger = activiteit.voorgangers[x]
                 if voortganger in gesorteerde_activiteiten:
@@ -77,3 +79,4 @@ class Graph:
 
     def ShortestTimeDone(self, dependencies):
         print("start ShortestTimeDone")  # debug print
+
