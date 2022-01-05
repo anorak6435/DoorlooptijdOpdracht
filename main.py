@@ -1,13 +1,6 @@
 from graph import GraphNode, Graph
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
 
 if __name__ == '__main__':
-    print_hi('Jarno')
-
-
     # maak graphnodes
     a = GraphNode("A", 6, [])
     b = GraphNode("B", 3, [])
@@ -31,13 +24,7 @@ if __name__ == '__main__':
     # maak graph
     graaf = Graph([a, b, c, d, e, f, g], deps)
 
-    print(graaf)
-
+    # maak een topoligische sortering van de nodes in de graaf
     graaf.sortNodes()
-
-    graaf.printMoments()
-    # graaf.restoreDependency() # prob don't need to do that anymore
-
-    # geef de dictionary van depencencies mee en een lijst van beschikbare nodes. Die leeg begint.
     print("Doorlooptijd project:", graaf.ShortestTimeDone())
 

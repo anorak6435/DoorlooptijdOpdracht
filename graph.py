@@ -24,29 +24,21 @@ class Graph:
         return str(self.moment)
 
     def sortNodes(self, index=0):
-        print("Huidige index in self.moment", index) # debug print
-        if index == 0:  # voor de eerste lijst (basecase)
-            for x in range(len(self.moment[index])-1, -1, -1):
-                node = self.moment[index][x]
-                print(node)  # debug print
-                # als de node een dependency heeft: zet de node in de volgende lijst.
-                if node.hasDependency():
-                    self.moveNodeDown(node, index)
-        else:  # voor alle volgende lijsten.
+        # loop achterste voren over de nodes lijst omdat nodes die dependencies hebben uit deze lijst worden verwijderd
+        # niet van 0 naar lengte zou ik nodes overslaan.
+        for x in range(len(self.moment[index])-1, -1, -1):
+            node = self.moment[index][x]
+            # als de node een dependency heeft: zet de node in de volgende lijst.
+            if node.hasDependency():
+                self.moveNodeDown(node, index)
 
-            for x in range(len(self.moment[index])-1, -1, -1):
-                node = self.moment[index][x]
-                print(node)  # debug print
-                if node.hasDependency():
-                    self.moveNodeDown(node, index)
-
-        # Heb ik de laatste lijst behandeld?
+        # Als dit niet de laatste lijst is
         if not self.isLastList(index):
             # update voorgangers
             self.updateDependency(self.moment[index], self.moment[index + 1])
             self.sortNodes(index+1)  # zo niet sorteer volgende lijst
 
-    # print de lijsten van momenten regel voor regel
+    # debug print de lijsten van momenten regel voor regel
     def printMoments(self):
         for moment in self.moment:
             print(moment)
@@ -55,33 +47,34 @@ class Graph:
     def isLastList(self, rowindex):
         return rowindex + 1 == len(self.moment)
 
-    # in de huidige rij staat een node die een rij omlaag kan.
+    # in de huidige rij staat een node die een rij omlaag kan, omdat hij dependencies heeft.
+    # rijen worden toegevoegd wanneer ze nodig zijn.
     def moveNodeDown(self, node, rowindex):
-        # check of ik niet out of range ga
+        # Als deze index van de laatste rij is moet er een extra rij toegevoegd worden
         if self.isLastList(rowindex):
             self.moment.append([])
         self.moment[rowindex + 1].append(node)
         self.moment[rowindex].remove(node)
 
+    # haal de dependencies die in de gesorteerde lijst voorkomen uit de ongesorteerde lijst.
     def updateDependency(self, gesorteerde_activiteiten, ongesorteerde_activiteiten):
         for activiteit in ongesorteerde_activiteiten:
             # ga achterstevoren over de lijst omdat tijdens de loop items verwijderd worden
-
             for x in range(len(activiteit.voorgangers)-1, -1, -1):
                 voortganger = activiteit.voorgangers[x]
                 if voortganger in gesorteerde_activiteiten:
                     activiteit.voorgangers.remove(voortganger)
 
-    # van achter naar voren over de nodes loopen.
     def ShortestTimeDone(self):
-        print("start ShortestTimeDone")  # debug print
-        # De beschikbaarheid van de nodes is een waarde die ik kan bijhouden met
+        # van achter naar voren over de nodes met for loop.
         for momentIndex in range(len(self.moment)-1, -1, -1):
             for i in range(len(self.moment[momentIndex])):
-                self.moment[momentIndex][i] = self.visit(self.moment[momentIndex][i])  # visit the nodes van het laatste moment naar het eerste moment
+                # de visit functie past de duration aan om de doorlooptijd te vinden.
+                self.moment[momentIndex][i] = self.visit(self.moment[momentIndex][i])
         # hier zijn we door alle momenten gegaan. De hoogste waarde van het eerste moment is de langste doorlooptijd
         return max(self.moment[0][0].duration, self.moment[0][1].duration)
 
+    # De visit functie heeft 3 interessante cases om te controleren
     # als geen latere node op deze node depends
     # als één latere node op deze node depends voeg de tijd van de latere node toe.
     # als twee later nodes op deze node dependen voeg de langste tijd van de latere node toe.
